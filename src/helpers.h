@@ -4,6 +4,8 @@
 #include <math.h>
 #include <string>
 #include <vector>
+#include <map>
+#include "vehicle.h"
 
 // for convenience
 using std::string;
@@ -152,6 +154,20 @@ vector<double> getXY(double s, double d, const vector<double> &maps_s,
   double y = seg_y + d*sin(perp_heading);
 
   return {x,y};
+}
+
+std::map<int, vector<vector<double>> > predictTraffic(std::map<int, Vehicle> vehicles,int prev_path_size) {
+    std::map<int, vector<vector<double>> > predictions;
+
+    std::map<int, Vehicle>::iterator it = vehicles.begin();
+
+    while (it != vehicles.end()) {
+        int v_id = it->first;
+        vector<vector<double>> preds = it->second.generate_predictions(prev_path_size);
+        predictions[v_id] = preds;
+        ++it;
+    }
+    return predictions;
 }
 
 #endif  // HELPERS_H
