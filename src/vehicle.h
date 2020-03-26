@@ -19,7 +19,7 @@ public:
     // Destructor
     virtual ~Vehicle();
 
-    Vehicle choose_next_state(std::map<int, std::vector<std::vector<double>> > predictions);
+    void choose_next_state(std::map<int, std::vector<std::vector<double>> > predictions);
 
     // Get possible successor states
     std::vector<std::string> successor_states();

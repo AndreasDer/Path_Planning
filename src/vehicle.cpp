@@ -21,7 +21,7 @@ Vehicle::Vehicle(int lane, double x, double y, double vx, double vy, double s, d
 
 Vehicle::~Vehicle() {}
 
-Vehicle Vehicle::choose_next_state(std::map<int, std::vector<std::vector<double>>> predictions)
+void Vehicle::choose_next_state(std::map<int, std::vector<std::vector<double>>> predictions)
 {
     bool too_close = false;
     std::string next_state = "KL";
@@ -50,7 +50,6 @@ Vehicle Vehicle::choose_next_state(std::map<int, std::vector<std::vector<double>
     this->state = next_state;
     this->lane = final_trajectory.lane;
     //std::cout << next_state << " ," << ref_vel << " , "<< final_trajectory.target_speed<<"," << lane <<","<<final_cost<<", "<< final_trajectory.lane<< std::endl;
-    return final_trajectory;
 }
 
 std::vector<std::string> Vehicle::successor_states() {
@@ -123,7 +122,7 @@ double Vehicle::calculate_cost(std::string state, std::map<int, std::vector<std:
             double d = prediction[1][0];
             if (d<(2 + 4 * this->lane + 2) && d>(2 + 4 * this->lane - 2)) {
 
-                if (((prediction[0][1] > this->s) && ((prediction[0][1] - this->s) < 30))|| fabs(prediction[0][0] - this->s)<10) {
+                if (((prediction[0][1] > this->s) && ((prediction[0][1] - this->s) < 30))|| fabs(prediction[0][0] - this->s)<15) {
                     trajectory->target_speed = prediction[2][0];
                     // If lane is not center lane increase cost to get vehicle to go in center lane to be able to switch to both other lanes
                     if (lane == 0 || lane == lanes_available - 1) {
@@ -166,11 +165,11 @@ double Vehicle::calculate_cost(std::string state, std::map<int, std::vector<std:
             int new_lane = this->lane + lane_direction[state];
             if (d<(2 + 4 * new_lane + 2) && d>(2 + 4 * new_lane - 2)) {
                 // If target lane is occupied
-                if ((prediction[0][1] > this->s) && ((prediction[0][1] - this->s) < 20)) {
+                if ((prediction[0][1] > this->s) && ((prediction[0][1] - this->s) < 30)) {
                     if (prediction[2][0] < target_lane_speed) {
                         target_lane_speed = prediction[2][0];
                         target_lane_free = false;
-                    }
+                    } 
                 }
             }
             else if (d < (2 + 4 * this->lane + 2) && d>(2 + 4 * this->lane - 2)) {
@@ -183,7 +182,7 @@ double Vehicle::calculate_cost(std::string state, std::map<int, std::vector<std:
             it++;
             // If target lane is free, increase cost for prepare lane change 
             if (target_lane_free) {
-                cost += 1;
+                cost = 1;
             }
         }
         // If target lane is occupied, stay in actual lane and adapt speed to actual lane

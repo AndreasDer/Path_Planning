@@ -1,6 +1,10 @@
+---
+typora-root-url: pictures
+---
+
 # CarND-Path-Planning-Project
 Self-Driving Car Engineer Nanodegree Program
-   
+
 ### Simulator.
 You can download the Term3 Simulator which contains the Path Planning Project from the [releases tab (https://github.com/udacity/self-driving-car-sim/releases/tag/T3_v1.2).  
 
@@ -74,6 +78,7 @@ A really helpful resource for doing this project and creating smooth trajectorie
 ## Dependencies
 
 * cmake >= 3.5
+  
   * All OSes: [click here for installation instructions](https://cmake.org/install/)
 * make >= 4.1
   * Linux: make is installed by default on most Linux distros
@@ -143,3 +148,38 @@ still be compilable with cmake and make./
 ## How to write a README
 A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
 
+
+
+# Reflection
+
+To achieve the goal of driving on the highway there are three tasks to execute. The first one is to detect other vehicles and predict their behavior in the future. The second step is to plan the ego behavior based on the environment. And the final step is to generate a trajectory that fulfills all requirements mentioned in the rubric points.
+
+To assist in all of this, I introduced the vehicle class to store information about the ego and the non-ego vehicles.
+
+#### Prediction
+
+The detection of other vehicles is not part of this project and is provided to the planner. The vehicles detected by sensor fusion are copied into a vector of vehicles. (main.cpp 107-113) Then the movement of the vehicles is predicted into the future assuming they keep lane and speed because we have no information about the behavior of the non-ego vehicle. (helpers.h 159-171; vehicle.cpp 84-110)
+
+#### Behavior planning and decision
+
+In this part most of the work took place. almost all of it is implemented in the Vehicle class.
+First the function choose_next_state is called on the ego vehicle.(main.cpp 122)
+
+The function then finds all possible successor states (vehicle.cpp 55-82) and calculates the cost for the individual next state. (vehicle.cpp 112-199) It then decides which is the cheapest following state.
+After that the speed is adjusted if necessary.(vehicle.cpp 44-51)
+
+#### Trajectory planning
+
+Based on the previous path and the chosen state a rough trajectory for the ego vehicle is created, transformed into the car coordinate system and a spline is fitted into this trajectory. (main.cpp 126-175) 
+
+Then what is left from the previous trajectory is added to the new trajectory (main.cpp 182.184) and a point along the spline in distance of 30 to the ego is chosen. Then points with equal distance are added to the trajectory and transformed back to the world coordinate system to finally reach a total of 50 points. (main.cpp 186-210)
+
+The final trajectory is then returned back to the simulator.
+
+The following picture shows that my path planning works for more than the required distance.
+
+![PathPlanning2](/PathPlanning2.PNG)
+
+#### Outlook
+
+Though the algorithm fulfills all the required rubric points there is place for improvement. One possible improvement is gap detection and speed adaption to change into that gap. If the behavior of the other vehicles is know then the car could react to lane changes and so on.
