@@ -1,6 +1,4 @@
----
-typora-root-url: pictures
----
+[image1]: ./pictures/PathPlanning2.PNG "PathPlanning"
 
 # CarND-Path-Planning-Project
 Self-Driving Car Engineer Nanodegree Program
@@ -178,7 +176,7 @@ The final trajectory is then returned back to the simulator.
 
 The following picture shows that my path planning works for more than the required distance.
 
-![PathPlanning2](/PathPlanning2.PNG)
+![alt text][image1]
 
 #### Outlook
 
